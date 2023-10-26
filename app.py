@@ -12,19 +12,31 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # 1. vectorise all the coffee csv data
-loader = CSVLoader(file_path="coffee-data.csv")
+loader = CSVLoader(file_path="data-v2.csv")
 documents = loader.load()
-
 embeddings = OpenAIEmbeddings()
 db = FAISS.from_documents(documents, embeddings)
 
 
 # 2. similarity search function
 def retrieve_info(query):
-    similar_response = db.similarity_search(query, k=3)  # return top 3 similar results
+    similar_response = db.similarity_search(
+        query, k=3
+    )  # return top 3 similar results but i think we only need one
     page_content_array = [doc.page_content for doc in similar_response]
     return page_content_array
 
+
+# # ------------------DISCARD------------------
+# message = (
+#     "I want some thing tastes like tamarind juice, cherry, passionfruit, chocolate"
+# )
+
+# response = retrieve_info(message)
+
+# for item in response:
+#     print(item)
+# # ------------------DISCARD------------------
 
 # 3. setup llm & prompt engineering
 llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo-16k-0613")
@@ -70,11 +82,9 @@ def main():
     st.header("Coffee Recommendation Generator :coffee:")
     message = st.text_area("Flavour Preferences")
 
-    if message:
+    if st.button("Generate", type="primary"):
         st.write("Generating the best possible coffee that suits your tastebuds...")
-
         result = generate_recommendation(message)
-
         st.info(result)
 
 
