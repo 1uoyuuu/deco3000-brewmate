@@ -1,5 +1,8 @@
-openai
+beautifulsoup4
+openai==0.28.1
 python-dotenv
 langchain
-faiss-cpu
 tiktoken
+streamlit
+streamlit_chat
+streamlit-echarts
